@@ -5,7 +5,16 @@ const {
 const { Layout } = require("../templates.js");
 
 function get(req, res) {
+  const session = req.session;
+  const current_user = session.user_id;
+  const page_owner = Number(req.params.user_id);
+
+  if (current_user !== page_owner) {
+    return res.status(401).send("<h1>fuck off</h1>");
+  }
+
   /**
+   *
    * Currently any user can view any other user's private confessions!
    * We need to ensure only the logged in user can see their page.
    * [1] Get the session ID from the cookie
@@ -42,18 +51,25 @@ function get(req, res) {
 }
 
 function post(req, res) {
-  /**
-   * Currently any user can POST to any other user's confessions (this is bad!)
-   * We can't rely on the URL params. We can only trust the cookie.
-   * [1] Get the session ID from the cookie
-   * [2] Get the session from the DB
-   * [3] Get the logged in user's ID from the session
-   * [4] Use the user ID to create the confession in the DB
-   * [5] Redirect back to the logged in user's confession page
-   */
-  const current_user = Number(req.params.user_id);
-  createConfession(req.body.content, current_user);
-  res.redirect(`/confessions/${current_user}`);
+  const session = req.session;
+  const current_user = session && session.user_id;
+
+  if (!req.body.content || !current_user) {
+    res.status(401).send(`<h1> No one's logged in <h1>`);
+  } else {
+    /**
+     * Currently any user can POST to any other user's confessions (this is bad!)
+     * We can't rely on the URL params. We can only trust the cookie.
+     * [1] Get the session ID from the cookie
+     * [2] Get the session from the DB
+     * [3] Get the logged in user's ID from the session
+     * [4] Use the user ID to create the confession in the DB
+     * [5] Redirect back to the logged in user's confession page
+     */
+
+    createConfession(req.body.content, current_user);
+    res.redirect(`/confessions/${current_user}`);
+  }
 }
 
 module.exports = { get, post };

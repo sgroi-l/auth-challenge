@@ -1,6 +1,9 @@
 const { Layout } = require("../templates.js");
 
 function get(req, res) {
+  
+  const session = req.session
+
   /**
    * [1] Read session ID from cookie
    * [2] Get session from DB
@@ -12,7 +15,11 @@ function get(req, res) {
   const content = /*html*/ `
     <div class="Cover">
       <h1>${title}</h1>
-      <nav><a href="/sign-up">Sign up</a> or <a href="/log-in">log in</a></nav>
+      ${
+        session
+          ? /*html*/ `<form method="POST" action="/log-out"><button class="Button">Log out</button>`
+          : /*html*/ `<nav><a href="/sign-up">Sign up</a> or <a href="/log-in">log in</a></nav>`
+      }
     </div>
   `;
   const body = Layout({ title, content });

@@ -24,7 +24,7 @@ const styles = /*css*/ `
     --hue: 330;
     --text-dark: hsl(var(--hue), 10%, 15%);
     --text-light: hsl(var(--hue), 10%, 96%);
-    --bg-dark: hsl(var(--hue), 25%, 12%);
+    --bg-dark: hsl(, 25%, 12%);
     --bg-light: hsl(var(--hue), 25%, 98%);
     --bg-dim: hsl(var(--hue), 10%, 95%);
     --accent: hsl(var(--hue), 50%, 50%);
